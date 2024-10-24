@@ -22,17 +22,34 @@ const ManageProducts = () => {
     stock: 0,
   });
 
-  // Fetch products dari API
+  // Fetch products dari API dengan tambahan log error ke terminal
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.error('Error fetching products:', error));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+        if (!res.ok) {
+          throw new Error(`Failed to fetch products. Status: ${res.status}`);
+        }
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  // Menambah produk baru
+  // Menambah produk baru dengan log yang lebih baik untuk melihat kesalahan di terminal
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validasi data input
+    if (!newProduct.name || newProduct.price <= 0 || !newProduct.imageFile || newProduct.stock < 0) {
+      alert("Please fill all fields correctly");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price.toString());
@@ -50,6 +67,7 @@ const ManageProducts = () => {
       });
 
       if (!res.ok) {
+        console.error(`Error adding product: ${res.status} - ${res.statusText}`);
         throw new Error('Failed to add product');
       }
 
@@ -64,12 +82,13 @@ const ManageProducts = () => {
     }
   };
 
-  // Menghapus produk
+  // Menghapus produk dengan log yang lebih jelas
   const handleDelete = async (id: number) => {
     try {
       const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
 
       if (!res.ok) {
+        console.error(`Error deleting product with ID ${id}: ${res.status} - ${res.statusText}`);
         throw new Error('Failed to delete product');
       }
 
@@ -77,7 +96,7 @@ const ManageProducts = () => {
       alert('Product deleted successfully!'); // Success alert
 
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error(`Error deleting product with ID ${id}:`, error);
       alert('Failed to delete product. Please try again.'); // Error alert
     }
   };

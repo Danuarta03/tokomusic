@@ -1,6 +1,7 @@
-"use client";  // This must be the first line
+"use client";  // Pastikan ini adalah komponen client-side
 
 import { useEffect, useState } from "react";
+import Image from 'next/image'; // Import komponen Image
 
 interface Product {
   id: number;
@@ -39,10 +40,12 @@ const Shopfront = () => {
               textAlign: "center",
             }}
           >
-            <img
+            <Image
               src={product.image}
               alt={product.name}
-              style={{ width: "100%", borderRadius: "8px" }}
+              width={200}
+              height={200}
+              style={{ borderRadius: "8px", objectFit: 'cover' }}
             />
             <h3 style={{ color: "#705C53" }}>{product.name}</h3>
             <p style={{ color: "#B7B7B7" }}>${product.price}</p>

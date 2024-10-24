@@ -1,6 +1,7 @@
-"use client"; // Ensure this is a client component for hooks
+"use client"; // Pastikan ini adalah komponen client-side
 
 import { useState, useEffect } from "react";
+import Image from 'next/image'; // Import komponen Image dari Next.js
 
 interface Product {
   id: number;
@@ -21,18 +22,16 @@ const ManageProducts = () => {
     stock: 0,
   });
 
-  // Fetch products from the MySQL database via the API
+  // Fetch products dari API
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, []);
 
-  // Add a new product
+  // Menambah produk baru
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Create a FormData object to send product data including the image
     const formData = new FormData();
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price.toString());
@@ -49,13 +48,11 @@ const ManageProducts = () => {
     });
 
     const addedProduct = await res.json();
-
-    // Update product list
     setProducts([...products, addedProduct]);
-    setNewProduct({ name: "", price: 0, imageFile: null, description: "", stock: 0 }); // Reset form
+    setNewProduct({ name: "", price: 0, imageFile: null, description: "", stock: 0 });
   };
 
-  // Delete a product
+  // Menghapus produk
   const handleDelete = async (id: number) => {
     await fetch(`/api/products/${id}`, { method: "DELETE" });
     setProducts(products.filter((product) => product.id !== id));
@@ -65,7 +62,7 @@ const ManageProducts = () => {
     <div style={{ padding: "2rem", backgroundColor: "#F5F5F7" }}>
       <h1 style={{ color: "#705C53", textAlign: "center" }}>Manage Products</h1>
 
-      {/* Add Product Form */}
+      {/* Form untuk menambah produk baru */}
       <form
         onSubmit={handleAddProduct}
         style={{
@@ -76,10 +73,8 @@ const ManageProducts = () => {
         }}
       >
         <h2 style={{ color: "#705C53", marginBottom: "1rem" }}>Add New Product</h2>
-
-        {/* Product Name */}
         <div>
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>Name:</label>
+          <label>Name:</label>
           <input
             type="text"
             value={newProduct.name}
@@ -88,10 +83,8 @@ const ManageProducts = () => {
             required
           />
         </div>
-
-        {/* Product Price */}
         <div style={{ marginTop: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>Price:</label>
+          <label>Price:</label>
           <input
             type="number"
             value={newProduct.price}
@@ -100,10 +93,8 @@ const ManageProducts = () => {
             required
           />
         </div>
-
-        {/* Product Image */}
         <div style={{ marginTop: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>Image:</label>
+          <label>Image:</label>
           <input
             type="file"
             onChange={(e) => setNewProduct({ ...newProduct, imageFile: e.target.files ? e.target.files[0] : null })}
@@ -111,10 +102,8 @@ const ManageProducts = () => {
             required
           />
         </div>
-
-        {/* Product Description */}
         <div style={{ marginTop: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>Description:</label>
+          <label>Description:</label>
           <textarea
             value={newProduct.description}
             onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
@@ -122,10 +111,8 @@ const ManageProducts = () => {
             required
           />
         </div>
-
-        {/* Product Stock */}
         <div style={{ marginTop: "1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.5rem" }}>Stock:</label>
+          <label>Stock:</label>
           <input
             type="number"
             value={newProduct.stock}
@@ -134,7 +121,6 @@ const ManageProducts = () => {
             required
           />
         </div>
-
         <button
           type="submit"
           style={{
@@ -151,14 +137,8 @@ const ManageProducts = () => {
         </button>
       </form>
 
-      {/* Products List */}
-      <table
-        style={{
-          width: "100%",
-          backgroundColor: "#EDDFE0",
-          borderRadius: "10px",
-        }}
-      >
+      {/* Daftar produk */}
+      <table style={{ width: "100%", backgroundColor: "#EDDFE0", borderRadius: "10px" }}>
         <thead>
           <tr style={{ backgroundColor: "#705C53", color: "#F5F5F7" }}>
             <th>Image</th>
@@ -173,10 +153,12 @@ const ManageProducts = () => {
           {products.map((product) => (
             <tr key={product.id}>
               <td>
-                <img
-                  src={`/images/${product.imageUrl}`} // Using the public/images folder
+                <Image
+                  src={`/images/${product.imageUrl}`} // Menggunakan Next.js Image untuk optimasi gambar
                   alt={product.name}
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                  width={100}
+                  height={100}
+                  style={{ objectFit: 'cover' }}
                 />
               </td>
               <td>{product.name}</td>
@@ -184,10 +166,7 @@ const ManageProducts = () => {
               <td>${product.price}</td>
               <td>{product.stock}</td>
               <td>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  style={{ color: "#B7B7B7" }}
-                >
+                <button onClick={() => handleDelete(product.id)} style={{ color: "#B7B7B7" }}>
                   Delete
                 </button>
               </td>

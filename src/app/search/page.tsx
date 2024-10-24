@@ -1,6 +1,7 @@
-"use client"; // Make sure this is a client-side component
+"use client"; // Pastikan ini adalah komponen client-side
 
 import { useState } from "react";
+import Image from 'next/image'; // Import komponen Image
 
 interface Product {
   id: number;
@@ -46,7 +47,13 @@ const SearchProducts = () => {
       <div>
         {results.map((product) => (
           <div key={product.id} style={{ marginBottom: "1rem", padding: "1rem", backgroundColor: "#EDDFE0", borderRadius: "10px" }}>
-            <img src={`/images/${product.imageUrl}`} alt={product.name} style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+            <Image
+              src={`/images/${product.imageUrl}`} // Menggunakan Next.js Image untuk optimasi gambar
+              alt={product.name}
+              width={100}
+              height={100}
+              style={{ objectFit: 'cover' }}
+            />
             <h3>{product.name}</h3>
             <p>{product.description}</p>
             <p>${product.price}</p>

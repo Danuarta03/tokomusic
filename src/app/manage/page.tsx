@@ -26,7 +26,8 @@ const ManageProducts = () => {
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => setProducts(data))
+      .catch((error) => console.error('Error fetching products:', error));
   }, []);
 
   // Menambah produk baru
@@ -42,20 +43,43 @@ const ManageProducts = () => {
       formData.append("image", newProduct.imageFile);
     }
 
-    const res = await fetch("/api/products", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("/api/products", {
+        method: "POST",
+        body: formData,
+      });
 
-    const addedProduct = await res.json();
-    setProducts([...products, addedProduct]);
-    setNewProduct({ name: "", price: 0, imageFile: null, description: "", stock: 0 });
+      if (!res.ok) {
+        throw new Error('Failed to add product');
+      }
+
+      const addedProduct = await res.json();
+      setProducts([...products, addedProduct]);
+      setNewProduct({ name: "", price: 0, imageFile: null, description: "", stock: 0 });
+      alert('Product added successfully!'); // Success alert
+
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Failed to add product. Please try again.'); // Error alert
+    }
   };
 
   // Menghapus produk
   const handleDelete = async (id: number) => {
-    await fetch(`/api/products/${id}`, { method: "DELETE" });
-    setProducts(products.filter((product) => product.id !== id));
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+
+      if (!res.ok) {
+        throw new Error('Failed to delete product');
+      }
+
+      setProducts(products.filter((product) => product.id !== id));
+      alert('Product deleted successfully!'); // Success alert
+
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product. Please try again.'); // Error alert
+    }
   };
 
   return (

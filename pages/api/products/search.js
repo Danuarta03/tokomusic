@@ -1,12 +1,11 @@
-// pages/api/products/search.js
 import mysql from 'mysql2/promise';
 
 // Configure the connection pool for the Ubuntu server
 const db = mysql.createPool({
-  host: 'your-ubuntu-server-ip', // Replace with your actual IP or domain
-  user: 'your-username',
-  password: 'your-password',
-  database: 'music_store', // Your database name
+    host: 'localhost', // IP or domain of your Ubuntu server
+    user: 'root',
+    password: 'moonrayz',
+    database: 'music_store', // Database name
 });
 
 export default async function handler(req, res) {

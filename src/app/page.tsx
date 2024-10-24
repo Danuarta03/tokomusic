@@ -16,7 +16,8 @@ const Shopfront = () => {
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => setProducts(data))
+      .catch((error) => console.error('Error fetching products:', error));
   }, []);
 
   return (

@@ -17,9 +17,17 @@ const SearchProducts = () => {
   const [results, setResults] = useState<Product[]>([]);
 
   const handleSearch = async () => {
-    const res = await fetch(`/api/products/search?query=${query}`);
-    const data = await res.json();
-    setResults(data);
+    try {
+      const res = await fetch(`/api/products/search?query=${query}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch search results');
+      }
+      const data = await res.json();
+      setResults(data);
+    } catch (error) {
+      console.error('Error searching products:', error);
+      alert('Failed to fetch search results. Please try again.'); // Error alert
+    }
   };
 
   return (
